@@ -37,9 +37,10 @@ private val retrofit = Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .baseUrl(BASE_URL)
     .build()
+
 interface MarsApiService {
     @GET("realestate")
-    fun getProperties():
+    suspend fun getProperties():
             List<MarsProperty>
 }
 
