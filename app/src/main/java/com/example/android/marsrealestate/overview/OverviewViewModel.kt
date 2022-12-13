@@ -24,9 +24,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.android.marsrealestate.network.MarsApi
 import com.example.android.marsrealestate.network.MarsProperty
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
@@ -37,14 +34,16 @@ class OverviewViewModel : ViewModel() {
     private val _status = MutableLiveData<String>()
 
     // The external immutable LiveData for the request status String
-    val response: LiveData<String>
+    val status: LiveData<String>
         get() = _status
 
 
-    private val _property = MutableLiveData<MarsProperty>()
+    private val _properties = MutableLiveData<List<MarsProperty>>()
 
-    val property: LiveData<MarsProperty>
-        get() = _property
+    val properties: LiveData<List<MarsProperty>>
+        get() = _properties
+
+
 
     /**
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
@@ -59,10 +58,10 @@ class OverviewViewModel : ViewModel() {
     private fun getMarsRealEstateProperties() {
         viewModelScope.launch {
             try {
-                val listResult = MarsApi.retrofitService.getProperties()
-                _status.value = "Success: ${listResult.size} Mars properties retrieved"
+                var listResult = MarsApi.retrofitService.getProperties()
+                _status.value = "Success: ${listResult.size}"
                 if (listResult.size > 0) {
-                    _property.value = listResult[0]
+                    _properties.value = listResult
                 }
             } catch (e: Exception) {
                 _status.value = "Failure: ${e.message}"
